@@ -1,0 +1,52 @@
+---
+# tasks file for hadoop_namenode
+- name: "Configuring core-site.xml file"
+  template:
+          src: "core-site.xml.j2"
+          dest: "/etc/hadoop/core-site.xml"
+          force: true
+- name: "Configuring hdfs-site.xml file"
+  template:
+          src: "hdfs-site.xml.j2"
+          dest: "/etc/hadoop/hdfs-site.xml"
+          force: true
+- name: "Checking if Name Node Directory already present"
+  command: "ls -l {{ Name_Node_Directory_Path }}{{ ansible_facts['hostname'] }}.directory"
+  ignore_errors: true
+  changed_when: false
+  register: name_node_directory_check
+- debug:
+        msg: "Name Node Directory Already exists"
+  when: name_node_directory_check.rc == 0
+- debug:
+        msg: "Name Node Directory doesnot exists"
+  when: name_node_directory_check.rc != 0
+- name: "Creating Name Node Directory"
+  file:
+          path: "{{ Name_Node_Directory_Path }}{{ ansible_facts['hostname'] }}.directory"
+          state: directory
+  when: name_node_directory_check.rc != 0
+  register: name_node_directory_status
+- name: "Formatting Name Node Directory"
+  shell: "echo Y | hadoop namenode -format"
+  when: name_node_directory_status.changed == true
+- name: "Checking if Name Node service already running"
+  command: "jps"
+  ignore_errors: true
+  changed_when: false
+  register: hadoop_namenode_service_check
+- debug:
+        msg: "Hadoop Name Node service already running"
+  when: hadoop_namenode_service_check.stdout | regex_search('(NameNode)') == "NameNode"
+- debug:
+        msg: "Hadoop Name Node service not running"
+  when: hadoop_namenode_service_check.stdout | regex_search('(NameNode)') != "NameNode"
+- name: "Starting Hadoop Name Node Service"
+  command: "hadoop-daemon.sh start namenode"
+  when: hadoop_namenode_service_check.stdout | regex_search('(NameNode)') != "NameNode"
+- name: "Making Hadoop Name Node Service Permanent on reboot"
+  lineinfile:
+          line: "hadoop-daemon.sh start namenode"
+          state: present
+          path: "/etc/rc.d/rc.local"
+          mode: "0755"

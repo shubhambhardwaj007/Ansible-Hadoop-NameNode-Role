@@ -1,0 +1,5 @@
+---
+# vars file for hadoop_namenode---
+Name_Node_Hdfs_Port: "9001"
+Name_Node_Directory_Path: "/root/"
+
