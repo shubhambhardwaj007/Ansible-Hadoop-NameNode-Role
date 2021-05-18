@@ -6,8 +6,8 @@ An Ansible Role to Configure and setup [Hadoop](https://hadoop.apache.org/) Name
 
 Requirements
 ------------
-This role is dependent upon `shubhambhardwaj007.hadoop_software_installation`.
-For a full usage example with the `shubhambhardwaj007.hadoop_software_installation` role, see the Example Playbook later in this README.
+This role is dependent upon `shubhambhardwaj007.hadoop_software_setup`.
+For a full usage example with the `shubhambhardwaj007.hadoop_software_setup` role, see the Example Playbook later in this README.
 
 Role Variables
 --------------
@@ -27,7 +27,7 @@ Example Playbook
 ```
  - hosts: name_node
    roles:
-     - shubhambhardwaj007.ansible_hadoop_software_installation_role
+     - shubhambhardwaj007.hadoop_software_setup
      - shubhambhardwaj007.hadoop_namenode
 ```
 License
