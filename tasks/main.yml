@@ -29,7 +29,7 @@
   register: name_node_directory_status
 - name: "Formatting Name Node Directory"
   shell: "echo Y | hadoop namenode -format"
-  when: name_node_directory_status.changed == true
+  when: name_node_directory_status.changed == "True"
 - name: "Checking if Name Node service already running"
   command: "jps"
   ignore_errors: true
